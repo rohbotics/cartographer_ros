@@ -188,7 +188,15 @@ void Run(const std::vector<string>& bag_filenames) {
 
       if (FLAGS_use_bag_transforms && msg.isType<tf2_msgs::TFMessage>()) {
         auto tf_message = msg.instantiate<tf2_msgs::TFMessage>();
-        tf_publisher.publish(tf_message);
+        tf2_msgs::TFMessage new_tf_message;
+
+        for (const auto transform : tf_message->transforms) {
+          if (transform.child_frame_id != trajectory_options.published_frame) {
+            new_tf_message.transforms.push_back(transform);
+          }
+        }
+
+        tf_publisher.publish(new_tf_message);
 
         for (const auto& transform : tf_message->transforms) {
           try {
