@@ -190,6 +190,7 @@ void Run(const std::vector<string>& bag_filenames) {
         auto tf_message = msg.instantiate<tf2_msgs::TFMessage>();
         tf2_msgs::TFMessage new_tf_message;
 
+        // Iterate throughtransforms and append all except the one we publish
         for (const auto transform : tf_message->transforms) {
           if (transform.child_frame_id != trajectory_options.published_frame) {
             new_tf_message.transforms.push_back(transform);
